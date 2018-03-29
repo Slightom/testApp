@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, AppRegistry, Image, TextInput, Button, Alert } from 'react-native';
+import { TabNavigator, TabBarBottom } from 'react-navigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 var c = 14;
 
@@ -65,7 +68,8 @@ class MyButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      title: props.title,
+      flex: 0
     };
   }
 
@@ -75,12 +79,12 @@ class MyButton extends Component {
 
   render() {
     return (
-      <Button onPress={this._onPressButton} title='Press me'/>
+      <Button onPress={this._onPressButton} title={this.state.title} backgroundColor= 'green'/>
     );
   }
 }
 
-export default class MainCLass extends Component {
+class HomeScreen extends Component {
   render() {
 
     return (
@@ -90,11 +94,11 @@ export default class MainCLass extends Component {
         <View style={styles.container}>
           <MyChangingText text='have a little fun from react-native' />
           <MyInputTest />
-          <MyButton />
+          <MyButton title='Press me'/>
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1, backgroundColor: 'powderblue' }} />
             <View style={{ flex: 2, backgroundColor: 'skyblue' }} />
-            <View style={{ flex: 3, backgroundColor: 'steelblue' }} />
+            <MyButton title='CLick to go to second page' />
           </View>
         </View>
       </View>
@@ -102,7 +106,57 @@ export default class MainCLass extends Component {
   }
 }
 
+class SettingsScreen extends Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Settings!</Text>
+      </View>
+    );
+  }
+}
 
+// export default TabNavigator({
+//   Home: { screen: HomeScreen },
+//   Settings: { screen: SettingsScreen },
+// });
+
+
+export default TabNavigator(
+  {
+    Home: { screen: HomeScreen },
+    Settings: { screen: SettingsScreen },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'Home') {
+          iconName = `ios-information-circle${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Settings') {
+          iconName = `ios-options${focused ? '' : '-outline'}`;
+        }
+
+        // You can return any component that you like here! We usually use an
+        // icon component from react-native-vector-icons
+        return <Ionicons name={iconName} size={25} color={tintColor} />;
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: 'white',
+      inactiveTintColor: 'gray',
+      style: {
+        backgroundColor: 'darkgreen',
+      }
+    },
+    tabBarComponent: TabBarBottom,
+    tabBarPosition: 'bottom',
+    animationEnabled: true,
+    swipeEnabled: true,
+    tabBarBackgroundColor: 'yellow',
+  }
+);
 
 const styles = StyleSheet.create({
   mainWrap: {
